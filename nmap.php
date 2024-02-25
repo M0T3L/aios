@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<?php include("functions/check.php");?>
+<?php include("functions/_check.php");?>
 <html>
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +24,6 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('scan-form').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -45,5 +44,6 @@
             xhr.send();
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

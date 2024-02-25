@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	require_once 'query/_conn.php';
+	require_once '_conn.php';
 	if(isset($_POST['login'])){
 		if($_POST['username'] != "" || $_POST['password'] != ""){
 			$username = $_POST['username'];
@@ -15,17 +15,17 @@
 				$_SESSION['username'] = $username;
 				$_SESSION['user_id'] = $userId;
 				$_SESSION["loggedIn"] = true;
-				header("location: index.php");
+				header("location: ../index.php");
 			} else {
 				echo "
 				<script>alert('Invalid username or password')</script>
-				<script>window.location = 'login.php'</script>
+				<script>window.location = '../login.php'</script>
 				";
 			}
 		} else {
 			echo "
 				<script>alert('Fill up all fields')</script>
-				<script>window.location = 'login.php'</script>
+				<script>window.location = '../login.php'</script>
 			";
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'query/_conn.php';
+require_once '_conn.php';
 if (isset($_POST['register'])) {
     if ($_POST['firstname'] != "" || $_POST['username'] != "" || $_POST['password'] != "") {
         try {
@@ -17,11 +17,11 @@ if (isset($_POST['register'])) {
         }
         $_SESSION['message'] = array("text" => "User created.", "alert" => "info");
         $conn = null;
-        header('location: login.php');
+        header('location: ../login.php');
     } else {
         echo "
             <script>alert('Fill up all fields')</script>
-            <script>window.location = 'register.php'</script>
+            <script>window.location = '../register.php'</script>
         ";
     }
 }
