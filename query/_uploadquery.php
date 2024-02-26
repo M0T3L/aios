@@ -1,54 +1,53 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    require_once('query/_conn.php');
-    $targetDir = "uploads/";
-    $user_id = $_SESSION['user_id'];
-    $username = $_SESSION['username'];
-    $existingFiles = glob($targetDir . base64_encode($username) . "_*.jpg");
-    $fileCount = count($existingFiles);
-    $uploadedFiles = [];
-    for ($i = 0; $i < count($_FILES["fileToUpload"]["name"]) && $fileCount < 3; $i++) {
-        $fileIndex = $fileCount + 1;
-        $randomNumber = rand(100, 999);
-        $targetFile = $targetDir . base64_encode($username) . "_" . "_" . $randomNumber . ".jpg";
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"][$i]);
-        if($check !== false) {
-            echo "Dosya bir resim - " . $check["mime"] . ".<br>";
-            $uploadOk = 1;
-        } else {
-            echo "Dosya bir resim değil.<br>";
-            $uploadOk = 0;
-        }
-        if (file_exists($targetFile)) {
-            echo "Üzgünüz, dosya zaten var.<br>";
-            $uploadOk = 0;
-        }
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif" ) {
-            echo "Üzgünüz, sadece JPG, JPEG, PNG ve GIF dosya formatlarına izin verilmektedir.<br>";
-            $uploadOk = 0;
-        }
-        if ($uploadOk == 1) {
-            if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $targetFile)) {
-                echo "Dosya başarıyla yüklendi: " . htmlspecialchars(basename($targetFile)) . "<br>";
-                $uploadedFiles[] = $targetFile;
-                $stmt = $pdo->prepare("INSERT INTO member (profile_pictures) VALUES '$targetFile' WHERE user_id = '$user_id'");
-                $stmt->execute([$targetFile]);
-                $fileCount++;
-            } else {
-                echo "Üzgünüz, dosya yükleme sırasında bir hata oluştu.<br>";
-            }
+// _conn.php dosyasını include et
+require_once('_conn.php');
+$user_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
+
+
+// Hedef dizini tanımla
+$target_dir = "/var/www/html/uploads/";
+
+// Kullanıcının mevcut fotoğraf sayısını kontrol et
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM member WHERE user_id = :user_id");
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$total_photos = $row['total'];
+
+// Kullanıcı toplamda 3 fotoğraf barındırabilir
+if ($total_photos < 3) {
+    // Kullanıcının mevcut fotoğraflarını kontrol et ve boş olan ilk sütuna yükle
+    for ($i = 1; $i <= 3; $i++) {
+        $column_name = "pp" . $i;
+        $stmt = $conn->prepare("SELECT $column_name FROM member WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Eğer sütun boşsa, fotoğrafı yükle
+        if (empty($row[$column_name])) {
+            $photo_name = base64_encode($username) . '_' . mt_rand(100, 999) . '.jpg'; // Örnek isim oluştur
+            $target_path = $target_dir . $photo_name;
+
+            // Fotoğrafı hedef dizine kaydet
+            move_uploaded_file($_FILES['fileToUpload']['tmp_name'][0], $target_path);
+
+
+            // Veritabanına fotoğraf adını kaydet
+            $stmt = $conn->prepare("UPDATE member SET $column_name = :photo_name WHERE user_id = :user_id");
+            $stmt->bindParam(':photo_name', $photo_name, PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+            $stmt->execute();
+
+            echo "Fotoğraf başarıyla yüklendi.";
+            break;
         }
     }
-    $fileToDelete = $_POST['delete_file'] ?? '';
-    if ($fileToDelete && in_array($fileToDelete, $existingFiles)) {
-        $stmt = $pdo->prepare("DELETE FROM member WHERE profile_pictures = ?");
-        $stmt->execute([$fileToDelete]);
-        unlink($fileToDelete);
-        echo "Dosya silindi: " . htmlspecialchars(basename($fileToDelete)) . "<br>";
-    }
+} else {
+    echo "Üzgünüz, maksimum 3 fotoğraf yükleyebilirsiniz.";
 }
 ?>

@@ -17,16 +17,12 @@
 				$_SESSION["loggedIn"] = true;
 				header("location: ../index.php");
 			} else {
-				echo "
-				<script>alert('Invalid username or password')</script>
-				<script>window.location = '../login.php'</script>
-				";
+				$_SESSION['messageL'] = array("text" => "Invalid username or password", "alert" => "danger");
+       			header("location: ../login.php");
 			}
 		} else {
-			echo "
-				<script>alert('Fill up all fields')</script>
-				<script>window.location = '../login.php'</script>
-			";
+			$_SESSION['messageL'] = array("text" => "Fill up all fields", "alert" => "danger");
+    		header("location: ../login.php");
 		}
 	}
 ?>

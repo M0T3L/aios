@@ -15,6 +15,15 @@
                 <div class="row">
                     <div class="col-md-2"></div>
                     <div class="col-md-8">
+                        <?php if(isset($_SESSION['messageL']));?>
+                        <div class="alert alert-<?php echo $_SESSION['messageL']['alert'] ?> msg"><?php echo $_SESSION['messageL']['text'] ?></div>
+                        <script>
+                            (function() {
+                                setTimeout(function(){
+                                    document.querySelector('.msg').remove();
+                                },3000)
+                            })();
+                        </script>
                         <form action="query/_loginquery.php" method="POST">   
                             <h4 class="text-success">Login</h4>
                             <hr style="border-top:1px groovy #000;">

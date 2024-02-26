@@ -13,10 +13,9 @@
             <div class="col-md-6 offset-md-3">
                 <form id="scan-form" action="tools/_nmap.php" method="get">
                     <div class="mb-3">
-                        <label for="scanInput" class="form-label">Scan:</label>
-                        <input type="text" class="form-control" id="scanInput" name="name" placeholder="IP/URL">
+                        <input type="text" class="form-control" id="scanInput" name="name" placeholder="xxx.xxx.xxx.xxx" pattern="\b(?:\d{1,3}\.){3}\d{1,3}\b" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Scan</button>
+                    <button type="submit" id="scan-button" class="btn btn-primary">Scan</button>
                 </form>
                 <br>
                 <div id="result-container">
@@ -25,25 +24,29 @@
         </div>
     </div>
     <script>
-        document.getElementById('scan-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var form = this;
-            var formData = new FormData(form);
-            var xhr = new XMLHttpRequest();
-            xhr.open(form.method, form.action + '?' + new URLSearchParams(formData).toString(), true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    document.getElementById('result-container').innerHTML = xhr.responseText;
-                } else {
-                    console.error('Error. Code: ' + xhr.status);
-                }
-            };
-            xhr.onerror = function() {
-                console.error('Error!');
-            };
-            xhr.send();
-        });
-    </script>
+    document.getElementById('scan-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var form = this;
+        var formData = new FormData(form);
+        document.getElementById('result-container').innerHTML = '<pre>Scanning...</pre>';
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action + '?' + new URLSearchParams(formData).toString(), true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                document.getElementById('result-container').innerHTML = xhr.responseText;
+            } else {
+                console.error('Error. Code: ' + xhr.status);
+            }
+            document.getElementById('scan-button').disabled = false;
+        };
+        xhr.onerror = function() {
+            console.error('Error!');
+            document.getElementById('scan-button').disabled = false;
+        };
+        document.getElementById('scan-button').disabled = true;
+        xhr.send();
+    });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
