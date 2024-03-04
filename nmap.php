@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php include("functions/_check.php");?>
-<html>
+<html data-bs-theme="dark">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAYKUS</title>
@@ -12,11 +12,35 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <form id="scan-form" action="tools/_nmap.php" method="get">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" id="scanInput" name="name" placeholder="xxx.xxx.xxx.xxx" pattern="\b(?:\d{1,3}\.){3}\d{1,3}\b" required>
-                    </div>
-                    <button type="submit" id="scan-button" class="btn btn-primary">Scan</button>
+                <div class="mb-3">
+                <input type="text" class="form-control" id="scanInput" name="ip" placeholder="xxx.xxx.xxx.xxx" pattern="\b(?:\d{1,3}\.){3}\d{1,3}\b" required>
+                </div>
+                <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="sT" name="sT">
+                <label class="form-check-label" for="sT">Use -sT</label>
+                </div>
+                <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="sC" name="sC">
+                <label class="form-check-label" for="sU">Use -sC</label>
+                </div>
+                <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="sV" name="sV">
+                <label class="form-check-label" for="sV">Use -sV</label>
+                </div>
+                <div class="mb-3">
+                <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="usePort" name="usePort">
+                <label class="form-check-label" for="usePort">Specify Port</label>
+                </div>
+                <input type="text" class="form-control" id="portInput" name="port" placeholder="Port Number" pattern="\d+" disabled>
+                </div>
+                <button type="submit" id="scan-button" class="btn btn-primary">Scan</button>
                 </form>
+                <script>
+                document.getElementById('usePort').addEventListener('change', function () {
+                document.getElementById('portInput').disabled = !this.checked;
+                });
+                </script>
                 <br>
                 <div id="result-container">
                 </div>

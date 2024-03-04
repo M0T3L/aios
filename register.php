@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-bs-theme="dark">
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
@@ -28,26 +28,28 @@
                             <hr style="border-top:1px groovy #000;">
                             <div class="form-group">
                                 <label>Firstname</label>
-                                <input type="text" class="form-control" name="firstname" />
+                                <input type="text" class="form-control" name="firstname" required/>
                             </div>
                             <div class="form-group">
                                 <label>Lastname</label>
-                                <input type="text" class="form-control" name="lastname" />
+                                <input type="text" class="form-control" name="lastname" required/>
                             </div>
                             <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" name="username" />
+                                <input type="text" class="form-control" name="username" required/>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
-                                <input type="password" class="form-control" name="password" />
+                                <input type="password" class="form-control" name="password" autocomplete="off" required/>
                             </div>
                             <br />
                             <div class="form-group">
                                 <button class="btn btn-primary form-control" name="register">Register</button>
                             </div>
                             <br>
-                            <a href="login.php">Login</a>
+                        </form>
+                        <form action="login.php">
+                                <input class="btn btn-secondary form-control" type="submit" value="Login"/>
                         </form>
                     </div>
                 </div>

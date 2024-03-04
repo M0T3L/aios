@@ -6,20 +6,21 @@ if (isset($_POST['register'])) {
     $lastname = trim($_POST['lastname']);
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
     if (empty($firstname) || empty($lastname) || empty($username) || empty($password)) {
         $_SESSION['messageR'] = array("text" => "Fill up all fields", "alert" => "danger");
         header("location: ../register.php");
         exit();
     }
 
-    if (!ctype_alpha($firstname) || !ctype_alpha($lastname)) {
+    if (!ctype_alpha($firstname) || !ctype_alpha($lastname) || !ctype_alpha($username)) {
         $_SESSION['messageR'] = array("text" => "Firstname and Lastname should only contain letters.", "alert" => "danger");
         header("location: ../register.php");
         exit();
     }
-    $constraints_passed = (strlen($firstname) >= 3 && strlen($firstname) <= 20) &&
-                         (strlen($lastname) >= 3 && strlen($lastname) <= 20) &&
-                         (strlen($username) >= 3 && strlen($username) <= 20) &&
+    $constraints_passed = (strlen($firstname) >= 1 && strlen($firstname) <= 20) &&
+                         (strlen($lastname) >= 1 && strlen($lastname) <= 20) &&
+                         (strlen($username) >= 1 && strlen($username) <= 20) &&
                          (strlen($password) >= 6 && strlen($password) <= 20);
     if (!$constraints_passed) {
         $_SESSION['messageR'] = array("text" => "Character constraints not met.", "alert" => "danger");
@@ -44,7 +45,7 @@ if (isset($_POST['register'])) {
         $stmt->bindParam(':firstname', $firstname);
         $stmt->bindParam(':lastname', $lastname);
         $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':password', $hashedPassword);
         $stmt->execute();
 
         $_SESSION['messageR'] = array("text" => "User created.", "alert" => "info");
